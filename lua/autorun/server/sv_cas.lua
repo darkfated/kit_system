@@ -41,7 +41,6 @@ end )
 net.Receive( 'cas_buy', function( len, ply )
 	local id = net.ReadFloat()
 	local dop = net.ReadBool()
-	local bad_purchase = true
 	local ActiveTabl = dop and CAS.DopList or CAS.List
 
 	if ( ActiveTabl[ id ] == nil ) then
