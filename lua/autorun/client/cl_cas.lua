@@ -238,12 +238,14 @@ local function OpenMen()
 		btn_buy.DoClick = function()
 			surface.PlaySound( 'UI/buttonclickrelease.wav' )
 
-			net.Start( 'cas_buy' )
-				net.WriteFloat( numItem )
-				net.WriteBool( true )
-			net.SendToServer()
+			if ( not LocalPlayer():GetNWBool( 'cas_dop_' .. numItem ) ) then
+				net.Start( 'cas_buy' )
+					net.WriteFloat( numItem )
+					net.WriteBool( true )
+				net.SendToServer()
 
-			menu:Close()
+				menu:Close()
+			end
 		end
 
 		DermaList_time:AddItem( pan )

@@ -47,6 +47,10 @@ net.Receive( 'cas_buy', function( len, ply )
 		return
 	end
 
+	if ( ply:GetNWBool( 'cas_dop_' .. id ) ) then
+		return
+	end
+
 	if ( ply:getDarkRPVar( 'money' ) >= ActiveTabl[ id ].money ) then
 		if ( ply:GetNWBool( 'cas_dop_' .. id ) ) then
 			return
