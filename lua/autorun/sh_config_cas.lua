@@ -2,13 +2,11 @@ CAS = {}
 
 CAS.DopList = { -- Additional things to the kit
 	{
-		id = 1,
 		name = 'Medkit',
 		weapon = 'weapon_medkit',
 		money = 15000,
 	},
 	{
-		id = 2,
 		name = 'Crowbar',
 		weapon = 'weapon_crowbar',
 		money = 74000,
@@ -17,7 +15,6 @@ CAS.DopList = { -- Additional things to the kit
 
 CAS.List = { -- Kits
 	{
-		id = 1,
 		name = 'The beginning of the path',
 		weapon = {
 			'weapon_357',
@@ -26,12 +23,8 @@ CAS.List = { -- Kits
 		},
 		health = 100,
 		armor = 0,
-		rank = {
-			'user',
-		},
 	},
 	{
-		id = 2,
 		name = 'The perfect VIP',
 		weapon = {
 			'weapon_shotgun',
@@ -46,7 +39,6 @@ CAS.List = { -- Kits
 		donat = true,
 	},
 	{
-		id = 3,
 		name = 'Admin is not a noob',
 		weapon = {
 			'weapon_ar2',
@@ -61,7 +53,6 @@ CAS.List = { -- Kits
 		donat = true,
 	},
 	{
-		id = 4,
 		name = 'Instant explosion',
 		weapon = {
 			'weapon_frag',
@@ -70,9 +61,6 @@ CAS.List = { -- Kits
 		},
 		health = 200,
 		armor = 80,
-		rank = {
-			'user',
-		},
 		money = 24000,
 		time = true,
 	},

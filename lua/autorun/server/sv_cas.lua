@@ -2,20 +2,24 @@ util.AddNetworkString( 'cas_call' )
 util.AddNetworkString( 'cas_buy' )
 
 net.Receive( 'cas_call', function( len, ply )
-	local tabl = net.ReadTable()
-	local health = net.ReadFloat()
-	local armor = net.ReadFloat()
-	local ranks = net.ReadTable()
 	local id = net.ReadFloat()
 	local retur = true
 
-	for o, p in pairs( ranks ) do
-		if ( ply:GetUserGroup() == p ) then
-			retur = false
-		end
+	if ( CAS.List[ id ] == nil ) then
+		return
+	end 
 
-		if ( ply:IsSuperAdmin() ) then
+	if ( ply:IsSuperAdmin() ) then
+		retur = false
+	else
+		if ( CAS.List[ id ].rank == nil ) then
 			retur = false
+		else
+			for o, rank in pairs( CAS.List[ id ].rank ) do
+				if ( ply:GetUserGroup() == rank ) then
+					retur = false
+				end
+			end
 		end
 	end
 
@@ -36,34 +40,20 @@ end )
 
 net.Receive( 'cas_buy', function( len, ply )
 	local id = net.ReadFloat()
-	local money = net.ReadFloat()
 	local dop = net.ReadBool()
-	local yes = true
+	local bad_purchase = true
+	local ActiveTabl = dop and CAS.DopList or CAS.List
 
-	if ( dop ) then
-		for k, v in pairs( CAS.DopList ) do
-			if ( v.id == id and v.money == money ) then
-				yes = false
-			end
-		end
-	else
-		for k, v in pairs( CAS.List ) do
-			if ( v.id == id and v.money == money ) then
-				yes = false
-			end
-		end    
-	end
-
-	if ( yes ) then
+	if ( ActiveTabl[ id ] == nil ) then
 		return
 	end
 
-	if ( ply:getDarkRPVar( 'money' ) >= money ) then
+	if ( ply:getDarkRPVar( 'money' ) >= ActiveTabl[ id ].money ) then
 		if ( ply:GetNWBool( 'cas_dop_' .. id ) ) then
 			return
 		end
 
-		ply:addMoney( -money )
+		ply:addMoney( -ActiveTabl[ id ].money )
 
 		if ( dop ) then
 			ply:SetNWBool( 'cas_dop_' .. id, true )
@@ -73,49 +63,41 @@ net.Receive( 'cas_buy', function( len, ply )
 
 		ply:ChatPrint( 'You bought this gear. Now you can use it!' )
 	else
-		ply:ChatPrint( "You don't have enough money! Need: " .. DarkRP.formatMoney( money ) )
+		ply:ChatPrint( "You don't have enough money! Need: " .. DarkRP.formatMoney( ActiveTabl[ id ].money ) )
 	end
 end )
 
 hook.Add( 'PlayerSpawn', 'CAS.Spawn', function( ply )
 	timer.Simple( 0, function()
 		if ( ply:GetNWString( 'player_casid' ) != nil ) then
-			for k, v in pairs( CAS.List ) do
-				if ( v.id == ply:GetNWString( 'player_casid' ) ) then
+			for numList, item in pairs( CAS.List ) do
+				if ( numList == ply:GetNWString( 'player_casid' ) ) then
 					ply:RemoveAllItems()
 
-					for X, Z in pairs( v.weapon ) do
-						ply:Give( Z )
+					for _, weapon in pairs( item.weapon ) do
+						ply:Give( weapon )
 					end
 				
-					for X, Z in pairs( ply:GetWeapons() ) do
-						local ammo_type = Z:GetPrimaryAmmoType()
-				
+					for _, plyWeapon in pairs( ply:GetWeapons() ) do
+						local ammo_type = plyWeapon:GetPrimaryAmmoType()
+
 						ply:GiveAmmo( 1000, ammo_type )
 					end
-
-					local health = v.health
 				
-					if ( health != 0 ) then
-						ply:SetHealth( health )
-					else
-						ply:SetHealth( 100 )
+					if ( item.health != 0 ) then
+						ply:SetHealth( item.health )
 					end
 
-					local armor = v.armor
-				
-					if ( armor != 0 ) then
-						ply:SetArmor( armor )
-					else
-						ply:SetArmor( 0 )
+					if ( item.armor != 0 ) then
+						ply:SetArmor( item.armor )
 					end
 				end
 			end
 		end
 
-		for z, x in pairs( CAS.DopList ) do
-			if ( ply:GetNWBool( 'cas_dop_' .. x.id ) ) then
-				ply:Give( x.weapon )
+		for num, item_dop in pairs( CAS.DopList ) do
+			if ( ply:GetNWBool( 'cas_dop_' .. num ) ) then
+				ply:Give( item_dop.weapon )
 			end
 		end
 	end )

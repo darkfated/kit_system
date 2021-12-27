@@ -97,7 +97,7 @@ local function OpenMen()
 
 	cat_stand:SetContents( DermaList_stand )
 
-	for k, v in pairs( CAS.List ) do
+	for numItem, item in pairs( CAS.List ) do
 		local pan = vgui.Create( 'DPanel' )
 
 		pan:Dock( TOP )
@@ -115,7 +115,7 @@ local function OpenMen()
 		header.Paint = function( self, w, h )
 			draw.RoundedBox( 6, 0, 0, w, h, Color(55,55,55) )
 
-			draw.SimpleText( v.name, 'CAS.Header', w * 0.5, h * 0.5, WhiteColor, 1, 1 )
+			draw.SimpleText( item.name, 'CAS.Header', w * 0.5, h * 0.5, WhiteColor, 1, 1 )
 		end
 
 		local pan_inf = vgui.Create( 'DScrollPanel', main )
@@ -138,15 +138,15 @@ local function OpenMen()
 			end
 		end
 
-		if ( v.health != nil and v.health != 0 ) then
-			createLabel( 'Health: ' .. v.health )
+		if ( item.health != nil and item.health != 0 ) then
+			createLabel( 'Health: ' .. item.health )
 		end
 
-		if ( v.armor != nil and v.armor != 0 ) then
-			createLabel( 'Armor: ' .. v.armor )
+		if ( item.armor != nil and item.armor != 0 ) then
+			createLabel( 'Armor: ' .. item.armor )
 		end
 
-		for m, wp in pairs( v.weapon ) do
+		for m, wp in pairs( item.weapon ) do
 			createLabel( wp )
 		end
 
@@ -155,9 +155,9 @@ local function OpenMen()
 		btn:SetTall( 50 )
 		btn:SetText( 'APPLY' )
 
-		if ( v.money != nil and LocalPlayer():GetNWBool( v.id ) != true ) then
-			btn:SetText( 'Buy for ' .. DarkRP.formatMoney( v.money ) )
-		elseif ( v.money != 0 and LocalPlayer():GetNWBool( v.id ) == true ) then
+		if ( item.money != nil and LocalPlayer():GetNWBool( numItem ) != true ) then
+			btn:SetText( 'Buy for ' .. DarkRP.formatMoney( item.money ) )
+		elseif ( item.money != 0 and LocalPlayer():GetNWBool( numItem ) == true ) then
 			btn:SetText( 'Select (purchased)' )
 		end
 
@@ -166,10 +166,10 @@ local function OpenMen()
 		btn.DoClick = function()
 			surface.PlaySound( 'UI/buttonclickrelease.wav' )
 
-			if ( v.money != nil and LocalPlayer():GetNWBool( v.id ) != true ) then
+			if ( item.money != nil and LocalPlayer():GetNWBool( numItem ) != true ) then
 				net.Start( 'cas_buy' )
-					net.WriteFloat( v.id )
-					net.WriteFloat( v.money )
+					net.WriteFloat( numItem )
+					net.WriteFloat( item.money )
 				net.SendToServer()
 
 				menu:Close()
@@ -178,24 +178,7 @@ local function OpenMen()
 			end
 
 			net.Start( 'cas_call' )
-				local wep_table = {}
-
-				for b, n in pairs( v.weapon ) do
-					table.insert( wep_table, n )
-				end
-
-				net.WriteTable( wep_table )
-				net.WriteFloat( v.health )
-				net.WriteFloat( v.armor )
-
-				local rank_table = {}
-
-				for h, j in pairs( v.rank ) do
-					table.insert( rank_table, j )
-				end
-
-				net.WriteTable( rank_table )
-				net.WriteFloat( v.id )
+				net.WriteFloat( numItem )
 			net.SendToServer()
 
 			menu:Close()
@@ -204,9 +187,9 @@ local function OpenMen()
 			draw.RoundedBox( 6, 0, 0, w, h, Color(245,245,245) )
 		end
 
-		if ( v.donat ) then
+		if ( item.donat ) then
 			DermaList_donat:AddItem( pan )
-		elseif ( v.time ) then
+		elseif ( item.time ) then
 			DermaList_time:AddItem( pan )
 		else
 			DermaList_stand:AddItem( pan )
@@ -223,7 +206,7 @@ local function OpenMen()
 		DermaList_time:AddItem( split_pnl )
 	end
 
-	for x, c in pairs( CAS.DopList ) do
+	for numItem, item_dop in pairs( CAS.DopList ) do
 		local pan = vgui.Create( 'DPanel' )
 		pan:SetTall( 70 )
 		pan.Paint = nil
@@ -234,7 +217,7 @@ local function OpenMen()
 		title.Paint = function( self, w, h )
 			draw.RoundedBox( 6, 0, 0, w, h, Color(0,0,0,130) )
 
-			draw.SimpleText( c.name, 'CAS.Header', w * 0.5, h * 0.5, WhiteColor, 1, 1 )
+			draw.SimpleText( item_dop.name, 'CAS.Header', w * 0.5, h * 0.5, WhiteColor, 1, 1 )
 		end
 
 		local btn_buy = vgui.Create( 'DButton', pan )
@@ -242,10 +225,10 @@ local function OpenMen()
 		btn_buy:DockMargin( 0, 4, 8, 4 )
 		btn_buy:SetWide( 140 )
 
-		if ( LocalPlayer():GetNWBool( 'cas_dop_' .. c.id ) ) then
+		if ( LocalPlayer():GetNWBool( 'cas_dop_' .. numItem ) ) then
 			btn_buy:SetText( 'Used (purchased)' )
 		else
-			btn_buy:SetText( 'Buy: ' .. DarkRP.formatMoney( c.money ) )
+			btn_buy:SetText( 'Buy: ' .. DarkRP.formatMoney( item_dop.money ) )
 		end
 
 		btn_buy.Paint = function( self, w, h )
@@ -256,8 +239,7 @@ local function OpenMen()
 			surface.PlaySound( 'UI/buttonclickrelease.wav' )
 
 			net.Start( 'cas_buy' )
-				net.WriteFloat( c.id )
-				net.WriteFloat( c.money )
+				net.WriteFloat( numItem )
 				net.WriteBool( true )
 			net.SendToServer()
 
