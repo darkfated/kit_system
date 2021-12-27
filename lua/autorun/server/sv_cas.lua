@@ -33,7 +33,7 @@ net.Receive( 'cas_call', function( len, ply )
 		timer.Simple( 0.1, function()
 			ply:SetNWString( 'player_casid', id )
 
-			ply:Kill()
+			ply:Spawn()
 		end )
 	end
 end )
