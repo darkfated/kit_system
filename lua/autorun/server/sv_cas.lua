@@ -31,7 +31,7 @@ net.Receive( 'cas_call', function( len, ply )
 
 	if ( ply:Alive() ) then
 		timer.Simple( 0.1, function()
-			ply:SetNWString( 'player_casid', id )
+			ply:SetNWInt( 'player_casid', id )
 
 			ply:Spawn()
 		end )
@@ -72,9 +72,9 @@ end )
 
 hook.Add( 'PlayerSpawn', 'CAS.Spawn', function( ply )
 	timer.Simple( 0, function()
-		if ( ply:GetNWString( 'player_casid' ) != nil ) then
+		if ( ply:GetNWInt( 'player_casid' ) != nil ) then
 			for numList, item in pairs( CAS.List ) do
-				if ( numList == ply:GetNWString( 'player_casid' ) ) then
+				if ( numList == ply:GetNWInt( 'player_casid' ) ) then
 					ply:RemoveAllItems()
 
 					for _, weapon in pairs( item.weapon ) do
