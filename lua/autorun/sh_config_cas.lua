@@ -21,8 +21,6 @@ CAS.List = { -- Kits
 			'weapon_bugbait',
 			'weapon_fists',
 		},
-		health = 100,
-		armor = 0,
 	},
 	{
 		name = 'The perfect VIP',

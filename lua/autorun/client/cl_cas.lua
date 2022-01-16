@@ -144,11 +144,11 @@ local function OpenMen()
 			end
 		end
 
-		if ( item.health != nil and item.health != 0 ) then
+		if ( item.health ) then
 			createLabel( 'Health: ' .. item.health )
 		end
 
-		if ( item.armor != nil and item.armor != 0 ) then
+		if ( item.armor ) then
 			createLabel( 'Armor: ' .. item.armor )
 		end
 
@@ -161,7 +161,7 @@ local function OpenMen()
 		btn:SetTall( 50 )
 		btn:SetText( 'APPLY' )
 
-		if ( item.money != nil and LocalPlayer():GetNWBool( numItem ) != true ) then
+		if ( item.money and LocalPlayer():GetNWBool( numItem ) != true ) then
 			btn:SetText( 'Buy for ' .. DarkRP.formatMoney( item.money ) )
 		elseif ( item.money != 0 and LocalPlayer():GetNWBool( numItem ) == true ) then
 			btn:SetText( 'Select (purchased)' )
@@ -172,7 +172,7 @@ local function OpenMen()
 		btn.DoClick = function()
 			surface.PlaySound( 'UI/buttonclickrelease.wav' )
 
-			if ( item.money != nil and LocalPlayer():GetNWBool( numItem ) != true ) then
+			if ( item.money and LocalPlayer():GetNWBool( numItem ) != true ) then
 				net.Start( 'cas_buy' )
 					net.WriteFloat( numItem )
 				net.SendToServer()
