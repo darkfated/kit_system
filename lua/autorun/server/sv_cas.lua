@@ -1,5 +1,12 @@
 util.AddNetworkString( 'cas_call' )
 util.AddNetworkString( 'cas_buy' )
+util.AddNetworkString( 'cas_text' )
+
+local function sendText( ply, txt )
+	net.Start( 'cas_text' )
+		net.WriteString( txt )
+	net.Send( ply )
+end
 
 net.Receive( 'cas_call', function( len, ply )
 	local id = net.ReadFloat()
@@ -24,7 +31,7 @@ net.Receive( 'cas_call', function( len, ply )
 	end
 
 	if ( retur ) then
-		ply:ChatPrint( 'You do not have enough rights to choose this equipment!' )
+		sendText( ply, 'You do not have enough rights to choose this equipment!' )
 
 		return
 	end
@@ -64,9 +71,9 @@ net.Receive( 'cas_buy', function( len, ply )
 			ply:SetNWBool( id, true )
 		end
 
-		ply:ChatPrint( 'You bought this gear. Now you can use it!' )
+		sendText( ply, 'You bought this gear. Now you can use it!' )
 	else
-		ply:ChatPrint( "You don't have enough money! Need: " .. DarkRP.formatMoney( ActiveTabl[ id ].money ) )
+		sendText( ply, "You don't have enough money! Need: " .. DarkRP.formatMoney( ActiveTabl[ id ].money ) )
 	end
 end )
 

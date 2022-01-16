@@ -258,3 +258,10 @@ local function OpenMen()
 end
 
 concommand.Add( 'cas_menu', OpenMen )
+
+net.Receive( 'cas_text', function()
+	local txt = net.ReadString()
+
+	chat.AddText( Color(174,160,255), '[CAS] ', WhiteColor, txt )
+	chat.PlaySound()
+end )
