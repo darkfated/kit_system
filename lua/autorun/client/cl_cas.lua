@@ -175,7 +175,6 @@ local function OpenMen()
 			if ( item.money != nil and LocalPlayer():GetNWBool( numItem ) != true ) then
 				net.Start( 'cas_buy' )
 					net.WriteFloat( numItem )
-					net.WriteFloat( item.money )
 				net.SendToServer()
 
 				menu:Close()
