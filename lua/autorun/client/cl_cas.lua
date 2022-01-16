@@ -12,6 +12,12 @@ surface.CreateFont( 'CAS.Btn', {
 	weight = 800,
 } )
 
+surface.CreateFont( 'CAS.Btn.Small', {
+	font = 'Roboto',
+	size = 18,
+	weight = 800,
+} )
+
 surface.CreateFont( 'CAS.Info', {
 	font = 'Roboto',
 	size = 16,
@@ -229,6 +235,7 @@ local function OpenMen()
 		btn_buy:Dock( RIGHT )
 		btn_buy:DockMargin( 0, 4, 8, 4 )
 		btn_buy:SetWide( 140 )
+		btn_buy:SetFont( 'CAS.Btn.Small' )
 
 		if ( LocalPlayer():GetNWBool( 'cas_dop_' .. numItem ) ) then
 			btn_buy:SetText( 'Used (purchased)' )
