@@ -22,6 +22,12 @@ surface.CreateFont( 'CAS.Info', {
 
 local WhiteColor = Color(255,255,255)
 local color_black = Color(0,0,0)
+local color_background = Color(45,45,45,220)
+local color_header = Color(99,99,99)
+local color_cat_donat = Color(255,119,119,210)
+local color_cat_time = Color(101,142,255,210)
+local color_cat_stand = Color(72,221,109,210)
+local color_item_header = Color(55,55,55)
 
 local function spPaint( pan )
 	local vbar = pan:GetVBar()
@@ -41,8 +47,8 @@ local function OpenMen()
 	menu:SetTitle( 'Equipment' )
 	menu:ShowCloseButton( false )
 	menu.Paint = function( self, w, h )
-		draw.RoundedBox( 6, 0, 0, w, h, Color(45,45,45,220) )
-		draw.RoundedBox( 0, 0, 0, w, 24, Color(99,99,99) )
+		draw.RoundedBox( 6, 0, 0, w, h, color_background )
+		draw.RoundedBox( 0, 0, 0, w, 24, color_header )
 	end
 
 	local close_button = vgui.Create( 'DButton', menu )
@@ -68,7 +74,7 @@ local function OpenMen()
 	cat_donat:Dock( TOP )
 	cat_donat:SetLabel( 'Privileges' )
 	cat_donat.Paint = function( self, w, h )
-		draw.RoundedBox( 4, 0, 0, w, h, Color(255,119,119,210) )
+		draw.RoundedBox( 4, 0, 0, w, h, color_cat_donat )
 	end
 
 	local DermaList_donat = vgui.Create( 'DPanelList', cat_donat )
@@ -79,7 +85,7 @@ local function OpenMen()
 	cat_time:Dock( TOP )
 	cat_time:SetLabel( 'For one session' )
 	cat_time.Paint = function( self, w, h )
-		draw.RoundedBox( 4, 0, 0, w, h, Color(101,142,255,210) )
+		draw.RoundedBox( 4, 0, 0, w, h, color_cat_time )
 	end
 
 	local DermaList_time = vgui.Create( 'DPanelList', cat_time )
@@ -90,7 +96,7 @@ local function OpenMen()
 	cat_stand:Dock( TOP )
 	cat_stand:SetLabel( 'Standart' )
 	cat_stand.Paint = function( self, w, h )
-		draw.RoundedBox( 6, 0, 0, w, h, Color(72,221,109,210) )
+		draw.RoundedBox( 6, 0, 0, w, h, color_cat_stand )
 	end
 
 	local DermaList_stand = vgui.Create( 'DPanelList', cat_stand )
@@ -113,7 +119,7 @@ local function OpenMen()
 		header:DockMargin( 8, 0, 8, 0 )
 		header:SetTall( 60 )
 		header.Paint = function( self, w, h )
-			draw.RoundedBox( 6, 0, 0, w, h, Color(55,55,55) )
+			draw.RoundedBox( 6, 0, 0, w, h, color_item_header )
 
 			draw.SimpleText( item.name, 'CAS.Header', w * 0.5, h * 0.5, WhiteColor, 1, 1 )
 		end
