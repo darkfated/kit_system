@@ -137,18 +137,22 @@ local function OpenMen()
 			draw.SimpleText( item.name, 'CAS.Header', w * 0.5, h * 0.5, WhiteColor, 1, 1 )
 		end
 
-		local pan_inf = vgui.Create( 'DScrollPanel', main )
-		pan_inf:Dock( LEFT )
-		pan_inf:DockMargin( 8 + 4, 0, 8 + 4, 8 )
-		pan_inf:SetWide( menu:GetWide() * 0.4 )
-		pan_inf.Paint = function( self, w, h )
+		local main_pnl = vgui.Create( 'DPanel', main )
+		main_pnl:Dock( LEFT )
+		main_pnl:DockMargin( 8 + 4, 0, 8 + 4, 8 )
+		main_pnl:SetWide( menu:GetWide() * 0.4 )
+		main_pnl.Paint = function( self, w, h )
 			draw.RoundedBox( 6, 0, -6, w, h + 6, color_panel_info )
 		end
 
-		spPaint( pan_inf )
+		local main_sp = vgui.Create( 'DScrollPanel', main_pnl )
+		main_sp:Dock( FILL )
+		main_sp:DockMargin( 4, 4, 4, 4 )
+
+		spPaint( main_sp )
 
 		local function createLabel( txt )
-			local text = vgui.Create( 'DPanel', pan_inf )
+			local text = vgui.Create( 'DPanel', main_sp )
 			text:Dock( TOP )
 			text:SetTall( 18 )
 			text:DockMargin( 0, 0, 0, 8 )
