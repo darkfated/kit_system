@@ -28,8 +28,8 @@ surface.CreateFont( 'CAS.Info', {
 
 local WhiteColor = Color(255,255,255)
 local color_black = Color(0,0,0)
-local color_background = Color(45,45,45,220)
-local color_header = Color(99,99,99)
+local color_background = Color(68,68,73)
+local color_header = Color(102,102,102)
 local color_cat_donat = Color(255,119,119,210)
 local color_cat_time = Color(101,142,255,210)
 local color_cat_stand = Color(72,221,109,210)
@@ -47,7 +47,7 @@ local function spPaint( pan )
 	vbar:SetHideButtons( true )
 	vbar.Paint = nil
 	vbar.btnGrip.Paint = function( self, w, h )
-		draw.RoundedBox( 4, 8, 8, w - 8, h - 16, self.Depressed and color_vbar_depr or color_vbar )
+		draw.RoundedBox( 4, 8, 0, w - 8, h, self.Depressed and color_vbar_depr or color_vbar )
 	end
 end
 
@@ -59,8 +59,9 @@ local function OpenMen()
 	menu:SetTitle( 'CAS Equipment' )
 	menu:ShowCloseButton( false )
 	menu.Paint = function( self, w, h )
-		draw.RoundedBox( 6, 0, 0, w, h, color_background )
-		draw.RoundedBox( 0, 0, 0, w, 24, color_header )
+		draw.RoundedBox( 8, 0, 0, w, h, color_background )
+		draw.RoundedBox( 8, 0, 0, w, 24, color_header )
+		draw.RoundedBox( 0, 0, 12, w, 12, color_header )
 	end
 
 	local close_button = vgui.Create( 'DButton', menu )
@@ -86,7 +87,7 @@ local function OpenMen()
 	cat_donat:Dock( TOP )
 	cat_donat:SetLabel( 'Privileges' )
 	cat_donat.Paint = function( self, w, h )
-		draw.RoundedBox( 4, 0, 0, w, h, color_cat_donat )
+		draw.RoundedBox( 8, 0, 0, w, h, color_cat_donat )
 	end
 
 	local DermaList_donat = vgui.Create( 'DPanelList', cat_donat )
@@ -97,7 +98,7 @@ local function OpenMen()
 	cat_time:Dock( TOP )
 	cat_time:SetLabel( 'For one session' )
 	cat_time.Paint = function( self, w, h )
-		draw.RoundedBox( 4, 0, 0, w, h, color_cat_time )
+		draw.RoundedBox( 8, 0, 0, w, h, color_cat_time )
 	end
 
 	local DermaList_time = vgui.Create( 'DPanelList', cat_time )
@@ -108,7 +109,7 @@ local function OpenMen()
 	cat_stand:Dock( TOP )
 	cat_stand:SetLabel( 'Standart' )
 	cat_stand.Paint = function( self, w, h )
-		draw.RoundedBox( 6, 0, 0, w, h, color_cat_stand )
+		draw.RoundedBox( 8, 0, 0, w, h, color_cat_stand )
 	end
 
 	local DermaList_stand = vgui.Create( 'DPanelList', cat_stand )
