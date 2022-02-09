@@ -34,6 +34,12 @@ local color_cat_donat = Color(255,119,119,210)
 local color_cat_time = Color(101,142,255,210)
 local color_cat_stand = Color(72,221,109,210)
 local color_item_header = Color(55,55,55)
+local color_btn = Color(245,245,245)
+local color_split_panel = Color(225,235,255)
+local color_title_panel = Color(0,0,0,130)
+local color_panel_info = Color(0,0,0,100)
+local color_vbar = Color(225,235,255)
+local color_vbar_depr = Color(190,198,214)
 
 local function spPaint( pan )
 	local vbar = pan:GetVBar()
@@ -41,7 +47,7 @@ local function spPaint( pan )
 	vbar:SetHideButtons( true )
 	vbar.Paint = nil
 	vbar.btnGrip.Paint = function( self, w, h )
-		draw.RoundedBox( 4, 8, 8, w - 8, h - 16, self.Depressed and Color(190,198,214) or Color(225,235,255) )
+		draw.RoundedBox( 4, 8, 8, w - 8, h - 16, self.Depressed and color_vbar_depr or color_vbar )
 	end
 end
 
@@ -135,7 +141,7 @@ local function OpenMen()
 		pan_inf:DockMargin( 8 + 4, 0, 8 + 4, 8 )
 		pan_inf:SetWide( menu:GetWide() * 0.4 )
 		pan_inf.Paint = function( self, w, h )
-			draw.RoundedBox( 6, 0, -6, w, h + 6, Color(0,0,0,100) )
+			draw.RoundedBox( 6, 0, -6, w, h + 6, color_panel_info )
 		end
 
 		spPaint( pan_inf )
@@ -195,7 +201,7 @@ local function OpenMen()
 			menu:Close()
 		end
 		btn.Paint = function( self, w, h )
-			draw.RoundedBox( 6, 0, 0, w, h, Color(245,245,245) )
+			draw.RoundedBox( 6, 0, 0, w, h, color_btn )
 		end
 
 		if ( item.donat ) then
@@ -211,7 +217,7 @@ local function OpenMen()
 		local split_pnl = vgui.Create( 'DPanel' )
 		split_pnl:SetTall( 8 )
 		split_pnl.Paint = function( self, w, h )
-			draw.RoundedBox( 6, 8, 0, w - 16, h, Color(225,235,255) )
+			draw.RoundedBox( 6, 8, 0, w - 16, h, color_split_panel )
 		end
 
 		DermaList_time:AddItem( split_pnl )
@@ -226,7 +232,7 @@ local function OpenMen()
 		title:Dock( FILL )
 		title:DockMargin( 8, 8, 8, 8 )
 		title.Paint = function( self, w, h )
-			draw.RoundedBox( 6, 0, 0, w, h, Color(0,0,0,130) )
+			draw.RoundedBox( 6, 0, 0, w, h, color_title_panel )
 
 			draw.SimpleText( item_dop.name, 'CAS.Header', w * 0.5, h * 0.5, WhiteColor, 1, 1 )
 		end
