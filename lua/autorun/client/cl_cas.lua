@@ -194,7 +194,7 @@ local function OpenMen()
 					net.WriteFloat( numItem )
 				net.SendToServer()
 
-				menu:Close()
+				btn:SetText( 'Select (purchased)' )
 
 				return
 			end
@@ -267,7 +267,7 @@ local function OpenMen()
 					net.WriteBool( true )
 				net.SendToServer()
 
-				menu:Close()
+				btn_buy:SetText( 'Used (purchased)' )
 			end
 		end
 
