@@ -1,8 +1,9 @@
 util.AddNetworkString( 'CAS-TEXT' )
 util.AddNetworkString( 'CAS-CALL' )
-util.AddNetworkString( 'CAS-UPDATE-KITS' )
-util.AddNetworkString( 'CAS-UPDATE-KITS-SERVER' )
+util.AddNetworkString( 'CAS-UPDATE' )
+util.AddNetworkString( 'CAS-UPDATE-SERVER' )
 util.AddNetworkString( 'CAS-UPDATE-REMOVE-KIT' )
+util.AddNetworkString( 'CAS-UPDATE-SERVER-CMDS' )
 
 local function sendText( ply, txt )
 	net.Start( 'CAS-TEXT' )
@@ -92,6 +93,12 @@ net.Receive( 'CAS-UPDATE-REMOVE-KIT', function( len, ply )
 	sendText( ply, 'This kit was deleting.' )
 end )
 
+net.Receive( 'CAS-UPDATE-SERVER-CMDS', function()
+	CAS.Commands = net.ReadTable()
+	
+	file.Write( 'cas/commands.json', util.TableToJSON( CAS.Commands ) )
+end )
+
 hook.Add( 'PlayerSpawn', 'CAS', function( ply )
 	timer.Simple( 0, function()
 		if ( ply:GetNWInt( 'CAS_ID' ) != nil ) then
@@ -123,9 +130,12 @@ end )
 timer.Create( 'CasDataUpdate', 1, 0, function()
 	CAS.List = {}
 	CAS.List = util.JSONToTable( file.Read( 'cas/kits.json', 'DATA' ) )
-	
-	net.Start( 'CAS-UPDATE-KITS' )
-		net.WriteTable( CAS.List ) -- Compression is not suitable due to the need for client-server communication
+
+	CAS.Commands = {}
+	CAS.Commands = util.JSONToTable( file.Read( 'cas/commands.json', 'DATA' ) )
+
+	net.Start( 'CAS-UPDATE' )
+		net.WriteTable( { kits = CAS.List, commands = CAS.Commands } ) -- Compression is not suitable due to the need for client-server communication
 	net.Broadcast()
 end )
 
@@ -139,21 +149,18 @@ hook.Add( 'Initialize', 'CAS', function()
 	if ( not file.Exists( 'cas/kits.json', 'DATA' ) ) then
 		file.Write( 'cas/kits.json', '[{"rank_access":[],"armor":0.0,"health":0.0,"money":0.0,"name":"The first step","weapon":[{"ammo":"40","class":"weapon_357"},{"ammo":"0","class":"weapon_fists"},{"ammo":"0","class":"weapon_bugbait"}]},{"rank_access":["admin"],"name":"The perfect VIP","health":150.0,"money":0.0,"armor":50.0,"weapon":[{"ammo":"0","class":"weapon_fists"},{"ammo":"30","class":"weapon_pumpshotgun2"},{"ammo":"60","class":"weapon_p2282"}]},{"rank_access":[],"armor":45.0,"health":135.0,"money":5000.0,"name":"Hopelessness","weapon":[{"ammo":"4","class":"weapon_frag"},{"ammo":"0","class":"weapon_fists"}]},{"rank_access":["admin"],"armor":100.0,"health":180.0,"money":0.0,"name":"Admin is not a noob","weapon":[{"ammo":"0","class":"weapon_stunstick"},{"class":"weapon_fiveseven2"},{"class":"weapon_fists"},{"class":"weapon_mp52"}]},{"rank_access":["admin"],"name":"Instant explosion","health":200.0,"money":24000.0,"armor":80.0,"weapon":[{"ammo":"4","class":"weapon_rpg"},{"ammo":"6","class":"weapon_frag"},{"ammo":"0","class":"weapon_fists"}]}]' )
 	end
+
+	if ( not file.Exists( 'cas/commands.json', 'DATA' ) ) then
+		file.Write( 'cas/commands.json', '["!cas","/cas","!kit_system","/kit_system"]' )
+	end
 end )
 
 // Opening the menu via chat
 
-local chat_commands = {
-	'!cas',
-	'/cas',
-	'!kit_system',
-	'/kit_system'
-}
-
 hook.Add( 'PlayerSay', 'CAS', function( ply, txt )
 	local txt = string.lower( txt )
 
-	if ( table.HasValue( chat_commands, txt ) ) then
+	if ( table.HasValue( CAS.Commands, txt ) ) then
 		ply:ConCommand( 'cas_menu' )
 	end
 end )

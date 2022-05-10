@@ -44,12 +44,15 @@ local color_iteminfo = {
 	Color(95,137,214), -- Info
 }
 local color_btn_create = Color(216,113,66)
+local color_btn_cmds_edit = Color(169,87,224)
 local color_btn_apply_sett = Color(61,194,83)
 local color_btn_delete_kit = Color(241,74,74)
 local color_rank_selected = Color(87,126,172)
 local color_rank_unselected = Color(39,113,197)
 local sp_vbar = Color(94,94,94)
 local sp_vbar_btn = Color(69,150,123)
+local color_cmd = Color(216,79,79)
+local color_btn_add_cmd = Color(41,40,48)
 
 local function menuClick( snd )
 	surface.PlaySound( snd or 'UI/buttonclickrelease.wav' )
@@ -297,7 +300,7 @@ concommand.Add( 'cas_menu', OpenMen )
 local function createKitSettings( pan, kit_num, func_rebuild )
 	pan:Clear()
 
-	local function createSettingTitle( txt ) 
+	local function createTitle( txt ) 
 		local title = vgui.Create( 'DPanel', pan )
 		title:Dock( TOP )
 		title:DockMargin( 8, 8, 8, 8 )
@@ -307,7 +310,7 @@ local function createKitSettings( pan, kit_num, func_rebuild )
 		end
 	end
 
-	createSettingTitle( 'Name' )
+	createTitle( 'Name' )
 
 	local kit_name = vgui.Create( 'DTextEntry', pan )
 	kit_name:Dock( TOP )
@@ -315,7 +318,7 @@ local function createKitSettings( pan, kit_num, func_rebuild )
 	kit_name:SetTall( 30 )
 	kit_name:SetFont( 'CAS.Item' )
 
-	createSettingTitle( 'Health (0 = standard)' )
+	createTitle( 'Health (0 = standard)' )
 
 	local kit_health = vgui.Create( 'DTextEntry', pan )
 	kit_health:Dock( TOP )
@@ -323,7 +326,7 @@ local function createKitSettings( pan, kit_num, func_rebuild )
 	kit_health:SetTall( 30 )
 	kit_health:SetFont( 'CAS.Item' )
 
-	createSettingTitle( 'Armor (0 = standard)' )
+	createTitle( 'Armor (0 = standard)' )
 
 	local kit_armor = vgui.Create( 'DTextEntry', pan )
 	kit_armor:Dock( TOP )
@@ -331,7 +334,7 @@ local function createKitSettings( pan, kit_num, func_rebuild )
 	kit_armor:SetTall( 30 )
 	kit_armor:SetFont( 'CAS.Item' )
 
-	createSettingTitle( 'Cost (0 = free)' )
+	createTitle( 'Cost (0 = free)' )
 
 	local kit_money = vgui.Create( 'DTextEntry', pan )
 	kit_money:Dock( TOP )
@@ -339,7 +342,7 @@ local function createKitSettings( pan, kit_num, func_rebuild )
 	kit_money:SetTall( 30 )
 	kit_money:SetFont( 'CAS.Item' )
 
-	createSettingTitle( 'Individual access to the kit' )
+	createTitle( 'Individual access to the kit' )
 	
 	local ranks_panel = vgui.Create( 'DPanel', pan )
 	ranks_panel:Dock( TOP )
@@ -387,7 +390,7 @@ local function createKitSettings( pan, kit_num, func_rebuild )
 		end
 	end
 
-	createSettingTitle( 'Weapon' )
+	createTitle( 'Weapon' )
 
 	local weps_panel = vgui.Create( 'DPanel', pan )
 	weps_panel:Dock( TOP )
@@ -476,7 +479,7 @@ local function createKitSettings( pan, kit_num, func_rebuild )
 			weapon = tabl_weps
 		}
 
-		net.Start( 'CAS-UPDATE-KITS-SERVER' )
+		net.Start( 'CAS-UPDATE-SERVER' )
 			net.WriteUInt( kit_num, 8 )
 			net.WriteTable( kit_tabl )
 		net.SendToServer()
@@ -517,6 +520,96 @@ local function createKitSettings( pan, kit_num, func_rebuild )
 	kit_health:SetText( item.health )
 	kit_armor:SetText( item.armor )
 	kit_money:SetText( item.money )
+end
+
+local function CreateCmdsEdit( pan )
+	pan:Clear()
+
+	local function createTitle( txt ) 
+		local title = vgui.Create( 'DPanel', pan )
+		title:Dock( TOP )
+		title:DockMargin( 8, 8, 8, 8 )
+		title:SetTall( 40 )
+		title.Paint = function( self, w, h )
+			draw.SimpleText( txt, 'CAS.InfoPanelMain', w * 0.5, h * 0.5, WhiteColor, 1, 1 )
+		end
+	end
+
+	createTitle( 'List of chat commands' )
+
+	local cmds_panel = vgui.Create( 'DPanel', pan )
+	cmds_panel:Dock( TOP )
+	cmds_panel:DockMargin( 8, 0, 8, 0 )
+	cmds_panel:DockPadding( 6, 6, 6, 6 )
+	cmds_panel:SetTall( 260 )
+	cmds_panel.Paint = function( self, w, h )
+		draw.RoundedBox( 8, 0, 0, w, h, color_background_main )
+	end
+
+	local cmds_list = vgui.Create( 'DScrollPanel', cmds_panel )
+	cmds_list:Dock( FILL )
+
+	scrollPanel( cmds_list )
+
+	local function saveCmdsCAS()
+		net.Start( 'CAS-UPDATE-SERVER-CMDS' )
+			net.WriteTable( CAS.Commands )
+		net.SendToServer()
+	end
+
+	local function createPanCmd( cmd, num_cmd )
+		local pan = vgui.Create( 'DPanel', cmds_list )
+		pan:Dock( TOP )
+		pan:DockMargin( 6, 6, 6, 6 )
+		pan:SetTall( 30 )
+		pan.Paint = function( self, w, h )
+			draw.RoundedBox( 8, 0, 1, w, h - 2, color_cmd )
+
+			draw.SimpleText( cmd, 'CAS.Item', w * 0.5, h * 0.5, WhiteColor, 1, 1 )
+		end
+		pan.cmd = cmd
+
+		local pan_btn = vgui.Create( 'DButton', pan )
+		pan_btn:Dock( RIGHT )
+		pan_btn:SetWide( 80 )
+		pan_btn:SetText( '' )
+		pan_btn.Paint = function( self, w, h )
+			draw.SimpleText( 'DELETE', 'CAS.Item', w * 0.5, h * 0.5, self:IsHovered() and GreyColor or WhiteColor, 1, 1 )
+		end
+		pan_btn.DoClick = function()
+			pan:Remove()
+
+			table.remove( CAS.Commands, num_cmd )
+
+			saveCmdsCAS()
+		end
+	end
+
+	for k, cmd in pairs( CAS.Commands ) do
+		createPanCmd( cmd )
+	end
+
+	local btn_add = vgui.Create( 'DButton', pan )
+	btn_add:Dock( TOP )
+	btn_add:DockMargin( 8, 8, 8, 0 )
+	btn_add:SetTall( 60 )
+	btn_add:SetText( '' )
+	btn_add.Paint = function( self, w, h )
+		draw.RoundedBox( 8, 0, 0, w, h, color_btn_add_cmd )
+
+		draw.SimpleText( 'Add a command', 'CAS.InfoPanelMain', w * 0.5, h * 0.5, self:IsHovered() and GreyColor or WhiteColor, 1, 1 )
+	end
+	btn_add.DoClick = function()
+		menuClick()
+
+		Derma_StringRequest( '', 'Write the desired command for the chat', '', function( i )
+			createPanCmd( i )
+
+			table.insert( CAS.Commands, i )
+
+			saveCmdsCAS()
+		end )
+	end
 end
 
 local function OpenEditMen()
@@ -629,6 +722,22 @@ local function OpenEditMen()
 		end )
 	end
 
+	local set_cmds_btn = vgui.Create( 'DButton', LeftPanel )
+	set_cmds_btn:Dock( TOP )
+	set_cmds_btn:DockMargin( 0, 8, 0, 0 )
+	set_cmds_btn:SetTall( 60 )
+	set_cmds_btn:SetText( '' )
+	set_cmds_btn.Paint = function( self, w, h )
+		draw.RoundedBox( 8, 0, 0, w, h, color_btn_cmds_edit )
+
+		draw.SimpleText( 'Edit chat commands', 'CAS.InfoPanelMain', w * 0.5, h * 0.5, self:IsHovered() and GreyColor or WhiteColor, 1, 1 )
+	end
+	set_cmds_btn.DoClick = function()
+		menuClick()
+
+		CreateCmdsEdit( main_sp )
+	end
+
 	local return_btn = vgui.Create( 'DButton', CAS.Menu )
 	return_btn:SetPos( 10, 10 )
 	return_btn:SetSize( 114, 40 )
@@ -662,6 +771,9 @@ net.Receive( 'CAS-TEXT', function()
 	end )
 end )
 
-net.Receive( 'CAS-UPDATE-KITS', function()
-	CAS.List = net.ReadTable()
+net.Receive( 'CAS-UPDATE', function()
+	local tabl = net.ReadTable()
+
+	CAS.List = tabl.kits
+	CAS.Commands = tabl.commands
 end )
