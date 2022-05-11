@@ -662,7 +662,11 @@ local function OpenEditMen()
 			item_panel:DockMargin( 8, 8, 8, 0 )
 			item_panel:SetTall( 56 + 40 )
 			item_panel.Paint = function( self, w, h )
-				draw.RoundedBox( 8, 0, 0, w, h, color_item_panel )
+				if ( kits_list.active_num == num ) then
+					draw.RoundedBox( 8, 0, 8, w, h - 16, color_item_panel )
+				else
+					draw.RoundedBox( 8, 0, 0, w, h, color_item_panel )
+				end
 	
 				draw.SimpleText( item.name, 'CAS.Item', w * 0.5 + 75, h * 0.5, WhiteColor, 1, 1 )
 			end
@@ -671,16 +675,19 @@ local function OpenEditMen()
 			item_btn:Dock( LEFT )
 			item_btn:SetWide( 150 )
 			item_btn:SetText( '' )
-			item_btn.DoClick = function()
-				menuClick()
-			end
 			item_btn.Paint = function( self, w, h )
 				draw.RoundedBox( 8, 0, 0, w, h, DarkColor )
 	
-				draw.SimpleText( 'settings', 'CAS.Item', w * 0.5, h * 0.5, GreyColor, 1, 1 )
+				draw.SimpleText( kits_list.active_num == num and 'In process' or 'settings', 'CAS.Item', w * 0.5, h * 0.5, GreyColor, 1, 1 )
 			end
 			item_btn.DoClick = function()
+				if ( kits_list.active_num == num ) then
+					return
+				end
+
 				menuClick()
+
+				kits_list.active_num = num
 	
 				createKitSettings( main_sp, num, function()
 					CreateKitList()
