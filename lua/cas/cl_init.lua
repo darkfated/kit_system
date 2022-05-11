@@ -479,7 +479,7 @@ local function createKitSettings( pan, kit_num, func_rebuild )
 			weapon = tabl_weps
 		}
 
-		net.Start( 'CAS-UPDATE-SERVER' )
+		net.Start( 'CAS-UPDATE-SERVER-KITS' )
 			net.WriteUInt( kit_num, 8 )
 			net.WriteTable( kit_tabl )
 		net.SendToServer()
@@ -712,7 +712,7 @@ local function OpenEditMen()
 			weapon = {}
 		}
 
-		net.Start( 'CAS-UPDATE-KITS-SERVER' )
+		net.Start( 'CAS-UPDATE-SERVER-KITS' )
 			net.WriteUInt( table.Count( CAS.List ) + 1, 8 )
 			net.WriteTable( kit_tabl )
 		net.SendToServer()

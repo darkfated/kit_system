@@ -1,7 +1,7 @@
 util.AddNetworkString( 'CAS-TEXT' )
 util.AddNetworkString( 'CAS-CALL' )
 util.AddNetworkString( 'CAS-UPDATE' )
-util.AddNetworkString( 'CAS-UPDATE-SERVER' )
+util.AddNetworkString( 'CAS-UPDATE-SERVER-KITS' )
 util.AddNetworkString( 'CAS-UPDATE-REMOVE-KIT' )
 util.AddNetworkString( 'CAS-UPDATE-SERVER-CMDS' )
 
@@ -55,7 +55,7 @@ net.Receive( 'CAS-CALL', function( len, ply )
 	end
 end )
 
-net.Receive( 'CAS-UPDATE-KITS-SERVER', function( len, ply )
+net.Receive( 'CAS-UPDATE-SERVER-KITS', function( len, ply )
 	if ( !ply:IsSuperAdmin() ) then
 		sendText( ply, "You don't have access!" )
 
